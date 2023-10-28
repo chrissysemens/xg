@@ -1,0 +1,9 @@
+@import '../../../variables.scss';
+
+.menu {
+    border-right: 1px solid $border-color;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 20px;
+}

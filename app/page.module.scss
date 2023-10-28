@@ -1,0 +1,16 @@
+.home {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    .menu {
+        display: flex;
+        flex-direction: column;
+        width: 350px;
+    }
+
+    .main {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+}

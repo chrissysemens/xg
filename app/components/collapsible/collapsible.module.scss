@@ -1,0 +1,19 @@
+@import '../../../variables.scss';
+
+.collapsible {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+
+    .header {
+        display: flex;
+        flex: 1;
+        border: 1px solid $component-outline;
+    }
+    .content {
+        display: flex;
+        flex: 1;
+        border: 1px solid $component-outline;
+        margin-left: 10px;
+    }
+}

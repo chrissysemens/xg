@@ -1,0 +1,45 @@
+@import '../../../variables.scss';
+
+.fixture {
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0px;
+    width: 800px;
+    font-size: 18px;
+    align-items: center;
+
+    .header {
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+
+        .details {
+            display: flex;
+            flex-direction: column;
+            margin: 0px auto;
+            .teams {
+                display: flex;
+                flex-direction: row;
+                > div, span {
+                    margin: 10px;
+                }
+    
+            }
+        }
+    }
+    .content {
+        height: 600px;
+        width: 100%;
+        display: flex;
+        flex: 1;
+
+        .home {
+            height: 100%;
+            flex: 1;
+        }
+        .away {
+            height: 100%;
+            flex: 1;
+        }
+    }
+}

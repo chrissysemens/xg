@@ -1,95 +1,60 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+import { sumAwayGoalsForFixtures, sumHomeGoalsForFixtures } from "./utils/maths";
+import { poisson } from "./utils/poisson";
+import { Menu } from "./components/menu/menu";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
+import { fetcher } from "./utils/fetcher";
+import { FixtureList } from "./components/fixtures/fixture-list";
+import styles from "./page.module.scss";
+import { Fixture } from "@/types";
 
-export default function Home() {
+const Home = () => {
+  const [selectedSeasons, setSelectedSeasons] = useState<
+    [number, number] | undefined
+  >();
+
+  const {
+    data: lastSeason,
+    isLoading: lastSeasonLoading,
+    error: lastSeasonError,
+  } = useSWR(
+    selectedSeasons
+      ? `${process.env.NEXT_PUBLIC_RAPID_API_URL}/seasons/${selectedSeasons[0]}/fixtures/`
+      : undefined,
+    (url) => fetcher<Fixture>(url, { cache: "force-cache" })
+  );
+
+  const {
+    data: thisSeason,
+    isLoading: thisSeasonLoading,
+    error: thisSeasonError,
+  } = useSWR(
+    selectedSeasons
+      ? `${process.env.NEXT_PUBLIC_RAPID_API_URL}/seasons/${selectedSeasons[1]}/fixtures/`
+      : undefined,
+    (url) => fetcher<Fixture>(url, { cache: "force-cache" })
+  );
+
+  const upcoming = [...(lastSeason ?? []), ...(thisSeason ?? [])]
+    .filter((f: Fixture) => f.status === "preview")
+    .sort((f1, f2) => f1.startTime - f2.startTime)
+    .splice(0, 10);
+
+    const results = [...(lastSeason ?? []), ...(thisSeason ?? [])]
+    .filter((f: Fixture) => f.status === "finished")
+    .sort((f1, f2) => f1.startTime - f2.startTime)
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <main className={styles.home}>
+      <div className={styles.menu}>
+        <Menu setSelectedSeasons={setSelectedSeasons} />
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div className={styles.main}>
+        <FixtureList fixtures={upcoming} results={results}/>
       </div>
     </main>
-  )
-}
+  );
+};
+
+export default Home;
