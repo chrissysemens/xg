@@ -22,7 +22,7 @@ const Home = () => {
     selectedSeasons
       ? `${process.env.NEXT_PUBLIC_RAPID_API_URL}/seasons/${selectedSeasons[0]}/fixtures/`
       : undefined,
-    (url) => fetcher<Fixture>(url, { cache: "force-cache" })
+    (url) => fetcher<Fixture>(url, { next: { revalidate: 3600 } })
   );
 
   const {
@@ -33,7 +33,7 @@ const Home = () => {
     selectedSeasons
       ? `${process.env.NEXT_PUBLIC_RAPID_API_URL}/seasons/${selectedSeasons[1]}/fixtures/`
       : undefined,
-    (url) => fetcher<Fixture>(url, { cache: "force-cache" })
+    (url) => fetcher<Fixture>(url, { next: { revalidate: 3600 } })
   );
 
   const upcoming = [...(lastSeason ?? []), ...(thisSeason ?? [])]

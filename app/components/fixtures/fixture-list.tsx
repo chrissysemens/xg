@@ -9,11 +9,22 @@ type Props = {
 
 const FixtureList = ({ fixtures, results }: Props) => {
   return (
-    <div className={styles.fixtureList}>
-      {fixtures.map((f: Fixture, i: number) => (
-        <Fixture key={i} fixture={f} results={results} expandDefault={i==0}/>
-      ))}
-    </div>
+    <>
+      <div className={styles.heading}>
+      </div>
+      <div className={styles.fixtureList}>
+        <div className={styles.scrollContainer}>
+          {fixtures.map((f: Fixture, i: number) => (
+            <Fixture
+              key={i}
+              fixture={f}
+              results={results}
+              expandDefault={i == 0}
+            />
+          ))}
+        </div>
+      </div>
+    </>
   );
 };
 

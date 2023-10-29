@@ -19,7 +19,7 @@ const Menu = ({ setSelectedSeasons}: Props) => {
     isLoading: countriesLoading,
     error: countriesError,
   } = useSWR(`${process.env.NEXT_PUBLIC_RAPID_API_URL}/countries/`, (url) =>
-    fetcher<Country>(url, { cache: "force-cache" })
+    fetcher<Country>(url, { next: { revalidate: 3600 } })
   );
 
   const {
@@ -30,14 +30,14 @@ const Menu = ({ setSelectedSeasons}: Props) => {
     selectedCountry
       ? `${process.env.NEXT_PUBLIC_RAPID_API_URL}/countries/${selectedCountry?.id}/tournaments/`
       : undefined,
-    (url) => fetcher<League>(url, { cache: "force-cache" })
+    (url) => fetcher<League>(url, { next: { revalidate: 3600 } })
   );
 
   useSWR(
     selectedLeague
       ? `${process.env.NEXT_PUBLIC_RAPID_API_URL}/tournaments/${selectedLeague.id}/seasons/`
       : undefined,
-    (url) => fetcher<Season>(url, { cache: "force-cache" }).then((seasons: Array<Season>) => {
+    (url) => fetcher<Season>(url, { next: { revalidate: 3600 } }).then((seasons: Array<Season>) => {
       const lastSeason = seasons[seasons.length -2];
       const thisSeason = seasons[seasons.length -1];
       setSelectedSeasons([lastSeason.id, thisSeason.id]);
@@ -53,6 +53,7 @@ const Menu = ({ setSelectedSeasons}: Props) => {
         placeholder="Select a country"
         onSelect={async (c: Country) => {
           setSelectedCountry(c);
+          setSelectedLeague(undefined)
         }}
         selectedOption={selectedCountry}
         isLoading={countriesLoading}
